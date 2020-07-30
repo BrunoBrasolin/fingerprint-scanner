@@ -1,17 +1,30 @@
 import React from 'react';
-import { Text, View, Input } from 'react-native';
+import { Text, View, TextInput, ImageBackground } from 'react-native';
 import styles from './styles';
 import { MaterialIcons as Icon } from '@expo/vector-icons';
+import * as LocalAuthentication from 'expo-local-authentication';
 
 const Index = () => {
+  const hardware = LocalAuthentication.hasHardwareAsync();
   return (
-    <View style={styles.container}>
-      <Text>
-        Silvio Santos Ipsum Mah roda a roduamm. Ma não existem mulher feiam,
-        existem mulher que não conhece os produtos Jequitiamm.
+    <ImageBackground
+      source={require('../assets/background-image.jpg')}
+      style={styles.container}
+    >
+      <Text style={styles.title}>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+        {hardware}
       </Text>
+      <View style={styles.label}>
+        <Icon name="email" size={40} color="#FFF" />
+        <TextInput style={styles.input} placeholder="E-mail" />
+      </View>
+      <View style={styles.label}>
+        <Icon name="lock" size={40} color="#FFF" />
+        <TextInput style={styles.input} placeholder="Password" />
+      </View>
       <Icon name="fingerprint" size={48} />
-    </View>
+    </ImageBackground>
   );
 };
 
