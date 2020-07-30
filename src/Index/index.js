@@ -9,18 +9,15 @@ import {
 import styles from './styles';
 import { MaterialIcons as Icon } from '@expo/vector-icons';
 import * as LocalAuthentication from 'expo-local-authentication';
+import { useNavigation } from '@react-navigation/native';
 
 const Index = () => {
   const hasHardwareSupport = LocalAuthentication.hasHardwareAsync();
   const hasFingerprintSaved = LocalAuthentication.isEnrolledAsync();
-  const { authStatus, setAuthStatus } = useState(false);
-
-  function authenticate() {
-    const result = LocalAuthentication.authenticateAsync({
-      promptMessage: 'Use your fingerprint to login',
-      disableDeviceFallback: true,
-    });
-    if (result.success) setAuthStatus(true);
+  const navigation = useNavigation();
+  async function authenticate() {
+    const result = await LocalAuthentication.authenticateAsync();
+    if (result.success) navigation.navigate('Home');
   }
   return (
     <ImageBackground
