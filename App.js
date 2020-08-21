@@ -55,7 +55,6 @@ const styles = StyleSheet.create({
     paddingVertical: 24,
     paddingHorizontal: 36,
     paddingTop: 40 + Constants.statusBarHeight,
-    filter: 
   },
   title: {
     textAlign: 'center',
