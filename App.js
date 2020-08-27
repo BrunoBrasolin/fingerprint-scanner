@@ -1,80 +1,119 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Text,
   View,
-  TextInput,
   ImageBackground,
   TouchableOpacity,
   StyleSheet,
   Image,
+  StatusBar,
+  Alert,
 } from 'react-native';
 import Constants from 'expo-constants';
-import { MaterialIcons as Icon } from '@expo/vector-icons';
+import { useFonts, Roboto_700Bold } from '@expo-google-fonts/roboto';
 import * as LocalAuthentication from 'expo-local-authentication';
+import { PanGestureHandler } from 'react-native-gesture-handler';
 
-const Index = () => {
-  const hasFingerprintSaved = LocalAuthentication.isEnrolledAsync();
+const App = () => {
+  const [result, setResult] = useState(false);
   async function authenticate() {
-    const result = await LocalAuthentication.authenticateAsync();
-    if (result) console.log('Entrou');
+    setResult(await LocalAuthentication.authenticateAsync());
+    if (result) {
+      Alert.alert('Success', "You've successfully logged in", [
+        {
+          text: 'Ok!',
+          onPress: () => {
+            console.log('Ok!');
+          },
+        },
+      ]);
+      setResult(false);
+    }
   }
+
+  const [fontsLoaded] = useFonts({
+    Roboto_700Bold,
+  });
+  if (!fontsLoaded)
+    return (
+      <View
+        style={{
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: '#060610',
+        }}
+      >
+        <Image source={require('./src/assets/loading.gif')} />
+      </View>
+    );
   return (
     <ImageBackground
-      source={require('./src/assets/background-image.jpg')}
-      style={styles.container}
+      source={require('./assets/splash.png')}
+      style={styles.content}
     >
+      <StatusBar
+        barStyle="light-content"
+        backgroundColor="transparent"
+        translucent
+      />
+
       <Image source={require('./src/assets/logo.png')} />
-      <Text style={styles.title}>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-      </Text>
-      {/* <View style={styles.label}>
-        <Icon name="email" size={40} color="#FFF" />
-        <TextInput style={styles.input} placeholder="E-mail" />
-      </View>
-      <View style={styles.label}>
-        <Icon name="lock" size={40} color="#FFF" />
-        <TextInput style={styles.input} placeholder="Password" />
-      </View> */}
-      {hasFingerprintSaved ? (
-        <TouchableOpacity onPress={authenticate}>
-          <Icon name="fingerprint" color="#FFF" size={48} />
-          <Text>Use your fingerprint/pin to login</Text>
+      <View style={styles.container}>
+        <Image
+          style={styles.rectangle}
+          source={require('./src/assets/rectangle.png')}
+        />
+
+        <Text style={styles.title}>Bruno, welcome back </Text>
+
+        <TouchableOpacity style={styles.button} onPress={authenticate}>
+          <Text style={styles.buttonText}>Login</Text>
         </TouchableOpacity>
-      ) : (
-        ''
-      )}
+      </View>
     </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  content: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
+    paddingTop: 80 + Constants.statusBarHeight,
+  },
+  container: {
+    backgroundColor: 'rgba(0, 255, 255, 0.8)',
+    width: '100%',
+    justifyContent: 'space-between',
+    borderTopRightRadius: 32,
+    borderTopLeftRadius: 32,
+    paddingHorizontal: 64,
     paddingVertical: 24,
-    paddingHorizontal: 36,
-    paddingTop: 40 + Constants.statusBarHeight,
+    opacity: 1,
+  },
+  rectangle: {
+    alignSelf: 'center',
   },
   title: {
     textAlign: 'center',
     fontSize: 24,
     marginVertical: 40,
+    fontFamily: 'Roboto_700Bold',
+    fontSize: 32,
+    color: '#fff',
   },
-  label: {
-    width: '100%',
-    flexDirection: 'row',
-    justifyContent: 'space-around',
+  button: {
+    backgroundColor: 'rgb(255, 124, 216)',
+    borderRadius: 32,
+    alignItems: 'center',
+    paddingVertical: 8,
   },
-  input: {
-    backgroundColor: '#FFF',
-    borderRadius: 4,
-    marginBottom: 12,
-    paddingHorizontal: 24,
-    fontSize: 16,
-    height: 40,
-    width: '80%',
+  buttonText: {
+    fontSize: 24,
+    fontFamily: 'Roboto_700Bold',
+    color: '#fff',
   },
 });
 
-export default Index;
+export default App;
